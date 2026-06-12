@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI API Key Checker</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">Local utility</p>
+        <h1>AI API Key Checker</h1>
+        <p class="lede">
+          Validate an AI API key, check whether it is usable in a real project, and estimate remaining tokens when the provider exposes balance data.
+        </p>
+      </section>
+
+      <section class="panel">
+        <form id="checker-form" class="form">
+          <label>
+            Provider
+            <select id="provider" name="provider"></select>
+          </label>
+
+          <label>
+            Base URL
+            <input id="baseUrl" name="baseUrl" type="text" placeholder="https://api.openai.com/v1" required />
+          </label>
+
+          <label>
+            API Key
+            <input id="apiKey" name="apiKey" type="password" placeholder="Paste your API key" required />
+          </label>
+
+          <label>
+            Pricing Model
+            <input id="model" name="model" type="text" placeholder="gpt-4.1-mini / gemini-2.5-flash / claude-sonnet-4 / deepseek-v4-flash" />
+          </label>
+
+          <div class="actions">
+            <button type="submit" id="submitBtn">Check Key</button>
+            <button type="button" id="chatCheckBtn" class="secondary-button">Chat Check</button>
+          </div>
+        </form>
+
+        <div id="status" class="status muted">Waiting for input.</div>
+      </section>
+
+      <section id="results" class="results hidden">
+        <article class="card">
+          <h2>Summary</h2>
+          <div id="summaryGrid" class="summary-grid"></div>
+        </article>
+
+        <article class="card">
+          <h2>Notes</h2>
+          <p id="notes"></p>
+        </article>
+
+        <!--
+        <article class="card">
+          <h2>Raw Response</h2>
+          <pre id="rawOutput"></pre>
+        </article>
+        -->
+      </section>
+
+      <section id="chatResults" class="results hidden">
+        <article class="card">
+          <h2>Chat Check</h2>
+          <div id="chatSummaryGrid" class="summary-grid"></div>
+        </article>
+
+        <article class="card">
+          <h2>Chat Notes</h2>
+          <p id="chatNotes"></p>
+        </article>
+
+        <!--
+        <article class="card">
+          <h2>Chat Raw Response</h2>
+          <pre id="chatRawOutput"></pre>
+        </article>
+        -->
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+  </html>
