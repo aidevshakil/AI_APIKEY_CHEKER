@@ -44,7 +44,9 @@ That is a much better signal than just checking whether the key format looks cor
 ## Run locally
 
 ```bash
-npm start
+npm install
+cp .env.example .env
+npm run dev
 ```
 
 Then open:
@@ -52,3 +54,31 @@ Then open:
 ```text
 http://localhost:3000
 ```
+
+## Supabase setup
+
+This project can now save check results to Supabase from the Node backend.
+
+1. Create a Supabase project.
+2. Open the SQL editor in Supabase and run the contents of [supabase-schema.sql](/Users/shakil/Downloads/Shakil/AI_APIKEY_CHEKER/supabase-schema.sql).
+3. Copy [.env.example](/Users/shakil/Downloads/Shakil/AI_APIKEY_CHEKER/.env.example) to `.env`.
+4. Set `SUPABASE_URL` to your project URL.
+5. Set `SUPABASE_SECRET_KEY` to a server-side secret key.
+6. Restart the app with `npm run dev`.
+
+When Supabase is configured:
+
+- `/api/check` saves a row after each validation request
+- `/api/chat-check` saves a row after each chat test
+- `/api/history` returns the latest saved rows
+- the UI shows recent saved checks in the `Saved History` section
+
+## Security notes
+
+- The app now saves the full API key in Supabase, plus a masked preview and SHA-256 fingerprint.
+- This is sensitive data. Keep using a server-side Supabase secret key and restrict database access carefully.
+
+Supabase recommends keeping secret keys on the server side and out of the browser, which matches this implementation. See the official docs for `createClient` initialization and API key guidance:
+
+- https://supabase.com/docs/reference/javascript/initializing
+- https://supabase.com/docs/guides/getting-started/api-keys

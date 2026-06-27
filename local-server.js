@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
@@ -11,6 +13,12 @@ const {
   runCheck,
   runChatCheck
 } = require("./lib/checker");
+const {
+  SUPABASE_TABLE,
+  isSupabaseConfigured,
+  listRecentChecks,
+  saveCheckRecord
+} = require("./lib/supabase");
 
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "127.0.0.1";
@@ -64,7 +72,30 @@ async function handleRequest(req, res) {
           label: config.label,
           defaultBaseUrl: config.defaultBaseUrl
         })),
-        supportedPricingModels: MODEL_PRICING_PER_1M
+        supportedPricingModels: MODEL_PRICING_PER_1M,
+        storage: {
+          supabaseConfigured: isSupabaseConfigured(),
+          table: SUPABASE_TABLE
+        }
+      });
+      return;
+    }
+
+    if (req.method === "GET" && reqUrl.pathname === "/api/history") {
+      if (!isSupabaseConfigured()) {
+        sendJson(res, 200, {
+          enabled: false,
+          table: SUPABASE_TABLE,
+          items: []
+        });
+        return;
+      }
+
+      const items = await listRecentChecks(Number(reqUrl.searchParams.get("limit")) || 12);
+      sendJson(res, 200, {
+        enabled: true,
+        table: SUPABASE_TABLE,
+        items
       });
       return;
     }
@@ -83,7 +114,23 @@ async function handleRequest(req, res) {
       }
 
       const result = await runCheck({ provider, apiKey, baseUrl, model });
-      sendJson(res, 200, result);
+      const saveState = await saveCheckRecord({
+        checkType: "check",
+        provider,
+        baseUrl,
+        model,
+        apiKey,
+        result
+      }).catch((error) => ({
+        saved: false,
+        configured: true,
+        error: error.message
+      }));
+
+      sendJson(res, 200, {
+        ...result,
+        storage: saveState
+      });
       return;
     }
 
@@ -101,7 +148,23 @@ async function handleRequest(req, res) {
       }
 
       const result = await runChatCheck({ provider, apiKey, baseUrl, model });
-      sendJson(res, 200, result);
+      const saveState = await saveCheckRecord({
+        checkType: "chat-check",
+        provider,
+        baseUrl,
+        model,
+        apiKey,
+        result
+      }).catch((error) => ({
+        saved: false,
+        configured: true,
+        error: error.message
+      }));
+
+      sendJson(res, 200, {
+        ...result,
+        storage: saveState
+      });
       return;
     }
 

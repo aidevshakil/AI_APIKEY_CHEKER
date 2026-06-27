@@ -1,4 +1,5 @@
 const { PROVIDERS, runChatCheck } = require("../lib/checker");
+const { saveCheckRecord } = require("../lib/supabase");
 
 function readRequestBody(req) {
   return new Promise((resolve, reject) => {
@@ -39,9 +40,31 @@ module.exports = async function handler(req, res) {
     }
 
     const result = await runChatCheck({ provider, apiKey, baseUrl, model });
+    const saveState = await saveCheckRecord({
+      checkType: "chat-check",
+      provider,
+      baseUrl,
+      model,
+      apiKey,
+      result
+    }).catch((error) => ({
+      saved: false,
+      configured: true,
+      error: error.message
+    }));
+
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json; charset=utf-8");
-    res.end(JSON.stringify(result, null, 2));
+    res.end(
+      JSON.stringify(
+        {
+          ...result,
+          storage: saveState
+        },
+        null,
+        2
+      )
+    );
   } catch (error) {
     res.statusCode = 500;
     res.setHeader("Content-Type", "application/json; charset=utf-8");
