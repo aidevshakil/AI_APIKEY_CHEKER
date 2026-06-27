@@ -30,7 +30,23 @@
 
           <label>
             API Key
-            <input id="apiKey" name="apiKey" type="password" placeholder="Paste your API key" required />
+            <div class="key-input-row">
+              <input
+                id="apiKey"
+                name="apiKey"
+                type="password"
+                placeholder="sk-proj-..."
+                autocomplete="off"
+                autocapitalize="off"
+                autocorrect="off"
+                spellcheck="false"
+                required
+              />
+              <button type="button" id="toggleApiKeyBtn" class="secondary-button compact-button toggle-key-button">
+                Show
+              </button>
+            </div>
+            <small class="field-hint">Paste the full key exactly as provided, for example an OpenAI project key starting with `sk-proj-`.</small>
           </label>
 
           <label>
@@ -45,6 +61,21 @@
         </form>
 
         <div id="status" class="status muted">Waiting for input.</div>
+      </section>
+
+      <section id="historySection" class="results">
+        <article class="card">
+          <div class="section-heading">
+            <div>
+              <h2>Saved History</h2>
+              <p id="historyMeta" class="section-copy">Connect Supabase to save and load checks.</p>
+            </div>
+            <button type="button" id="refreshHistoryBtn" class="secondary-button compact-button">Refresh</button>
+          </div>
+          <div id="historyList" class="history-list">
+            <p class="empty-state">No saved rows yet.</p>
+          </div>
+        </article>
       </section>
 
       <section id="results" class="results hidden">
