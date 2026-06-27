@@ -7,6 +7,11 @@
     "node": ">=18"
   },
   "scripts": {
+    "dev": "node local-server.js",
     "start": "node local-server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.108.2",
+    "dotenv": "^17.4.2"
   }
 }
