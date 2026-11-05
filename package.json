@@ -7,8 +7,8 @@
     "node": ">=18"
   },
   "scripts": {
-    "dev": "node api.js && node local-server.js",
-    "start": "node api.js && node local-server.js"
+    "dev": "node local-server.js",
+    "start": "node local-server.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",
